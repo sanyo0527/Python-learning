@@ -1,0 +1,38 @@
+import requests
+from bs4 import BeautifulSoup
+import tkinter as tk
+
+
+def _hit1():
+    urL="https://news.ltn.com.tw/list/breakingnews"
+    rQ=requests.get(urL).text
+    souP=BeautifulSoup(rQ,"html5lib")
+    for mySoup in souP.find_all("li"):
+        try:    
+            listBox.insert(tk.END, mySoup.p.text.strip())
+            listBox.insert(tk.END, mySoup.a["href"].strip())
+            listBox.insert(tk.END, "----------------")        
+        except:
+            continue
+
+def _hit2():
+    wiN.title(listBox.get(listBox.curselection()))
+
+wiN = tk.Tk()
+wiN.title("自由時報即時新聞")
+wiN.geometry("900x500")
+
+btN1 = tk.Button(wiN, text="收集!!",fg="green", font=("Arial", 16), width=10, height=2, command=_hit1)
+btN1.pack() 
+btN2 = tk.Button(wiN, text="選取!!",fg="blue", font=("Arial", 16), width=10, height=2, command=_hit2)
+btN2.pack()
+
+
+sBar=tk.Scrollbar(wiN)
+sBar.pack(side=tk.RIGHT,fill=tk.Y)
+
+listBox=tk.Listbox(wiN, font=("Arial", 20),bg="yellow",yscrollcommand=sBar.set)
+listBox.pack(side=tk.BOTTOM, fill=tk.BOTH)
+sBar.config(command=listBox.yview) 
+
+wiN.mainloop()
